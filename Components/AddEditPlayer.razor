@@ -1,0 +1,58 @@
+﻿
+@inject IPlayerRepository _repository;
+
+<h3>AddEditPlayer</h3>
+
+<FluentEditForm Model="InputPlayer" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <FluentValidationSummary />
+    <FluentNumberField @bind-Value="InputPlayer.Id" hidden></FluentNumberField>
+    <FluentTextField Label="Name" @bind-Value="InputPlayer.Name" Required></FluentTextField>
+    <FluentTextField Label="Surname" @bind-Value="InputPlayer.Surname" Required></FluentTextField>
+    <FluentDatePicker Label="Birth date" @bind-Value="InputPlayer.BirthDate" Required></FluentDatePicker>
+    <FluentSelect TOption="Team"
+              Label="Select team"
+              Items="@TeamList"
+              Id="team-listbox"
+              Width="200px"
+              Height="250px"
+              OptionValue="@(p => p.Id.ToString())"
+              OptionText="@(p => p.Name)"
+              @bind-Value="@SelectedTeamId"/>
+    <br/>
+    <br/>
+
+    <FluentButton Type="ButtonType.Submit">Submit</FluentButton>
+</FluentEditForm>
+
+@code {
+    [Parameter]
+    public Player? InputPlayer { get; set; }
+    public bool editPlayer = false;
+    public List<Team> TeamList = new();
+    public string SelectedTeamId;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (InputPlayer == null)
+        {
+            InputPlayer = new Player();
+        }
+        else
+            editPlayer = true;
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        if (editPlayer)
+            await _repository.UpdatePlayer(InputPlayer);
+        else
+           await  _repository.AddPlayer(InputPlayer);
+    }
+
+
+
+
+
+}
