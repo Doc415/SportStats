@@ -1,0 +1,29 @@
+﻿@inject ITeamRepository _repository
+@rendermode InteractiveServer
+<h3>Edit Team</h3>
+
+<FluentSelect TOption="Team"
+              Items="@Teams"
+              Id="team-listbox"
+              OptionValue="@(p => p.Id.ToString())"
+              OptionText="@(p => p.Name)"
+              @bind-SelectedOption="@teamToEdit" />
+
+<ManageTeam SelectedTeam="teamToEdit"></ManageTeam>
+
+
+
+@code {
+    List<Team> Teams = new();
+    Team teamToEdit = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Teams=await _repository.GetTeams();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await _repository.UpdateTeam(teamToEdit);
+    }
+}

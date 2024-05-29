@@ -22,8 +22,20 @@ public class StatsContext:DbContext
         .HasValue<Rebound>("Rebound")
         .HasValue<Pass>("Pass");
 
+        modelBuilder.Entity("SportStats.Models.Player", b =>
+{
+    b.HasOne("SportStats.Models.Team", "MemberOf")
+        .WithMany("Players")
+        .HasForeignKey("MemberOfId")
+        .OnDelete(DeleteBehavior.SetNull);
+
+    b.Navigation("MemberOf");
+});
+
       
 
         base.OnModelCreating(modelBuilder);
     }
+
+
 }

@@ -1,7 +1,11 @@
-﻿
-@inject IPlayerRepository _repository;
+﻿@inject IPlayerRepository _playerrepository;
+@inject ITeamRepository _teamrepository;
+@inject NavigationManager navManager;
 
-<h3>AddEditPlayer</h3>
+<br/>
+<FluentHeader Style="width:100%">
+    @Header
+</FluentHeader>
 
 <FluentEditForm Model="InputPlayer" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -18,7 +22,8 @@
               Height="250px"
               OptionValue="@(p => p.Id.ToString())"
               OptionText="@(p => p.Name)"
-              @bind-Value="@SelectedTeamId"/>
+              @bind-Value="@SelectedTeamId"
+              @bind-SelectedOption="@SelectedTeam"/>
     <br/>
     <br/>
 
@@ -31,6 +36,8 @@
     public bool editPlayer = false;
     public List<Team> TeamList = new();
     public string SelectedTeamId;
+    public Team SelectedTeam;
+    private string Header = string.Empty;
 
 
     protected override async Task OnInitializedAsync()
@@ -38,21 +45,31 @@
         if (InputPlayer == null)
         {
             InputPlayer = new Player();
+            Header = "Add new player";
         }
         else
+        {
             editPlayer = true;
+            Header = "Edit player";
+        }
+
+        TeamList = await _teamrepository.GetTeams();
+        TeamList.Insert(0, null);
     }
 
     public async Task HandleValidSubmit()
     {
+        if (SelectedTeam!=null)
+        {
+           InputPlayer.IsInTeam = true;
+        }
+        InputPlayer.MemberOf = SelectedTeam;
+
         if (editPlayer)
-            await _repository.UpdatePlayer(InputPlayer);
+            await _playerrepository.UpdatePlayer(InputPlayer);
         else
-           await  _repository.AddPlayer(InputPlayer);
+            await  _playerrepository.AddPlayer(InputPlayer);
+
+        navManager.NavigateTo("/administration",true);
     }
-
-
-
-
-
-}
+    }

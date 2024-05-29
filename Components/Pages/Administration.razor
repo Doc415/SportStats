@@ -22,19 +22,19 @@
                               Match="NavLinkMatch.All"
                               IconRest="AddTeamIcon()"
                               IconActive="AddTeamIcon(active: true)"
-                              Text="Add team" />
+                              Text="Manage team" />
             <FluentAppBarItem OnClick="@(()=> status="manageplayer")"
                               IconRest="AddPlayerIcon()"
                               IconActive="AddPlayerIcon(active: true)"
-                              Text="Add Player" />           
+                              Text="Manage Player" />
         </FluentAppBar>
-        </FluentStack>
+    </FluentStack>
 
-    <div>
+    <FluentLayout>
         @switch (status)
         {
             case "addteam":
-                <div class="alert alert-success">Adding team!</div>
+               <AddTeam></AddTeam>
                 ;
                 break;
             case "addplayer":
@@ -42,8 +42,7 @@
                 ;
                 break;
             case "manageteam":
-                <div class="alert alert-info">Team management...</div>
-                ;
+               <SelectTeam></SelectTeam>
                 break;
             case "manageplayer":
                 <div>Manage player</div>
@@ -54,9 +53,9 @@
                 ;
                 break;
         }
+    </FluentLayout>
 
-
-    </div>
+    
 
 
     
@@ -67,7 +66,7 @@
 @code {
 
     private bool expanded = true;
-    string status = "addteam";
+    string status = "";
 
 
     private bool _showSearch = true;

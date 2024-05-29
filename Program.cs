@@ -13,7 +13,8 @@ builder.Services.AddFluentUIComponents();
 var connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<StatsContext>(options =>
                                                      options.UseSqlServer(connectionString));
-builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();  
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

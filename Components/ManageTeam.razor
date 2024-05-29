@@ -1,0 +1,23 @@
+﻿<h3>ManageTeam</h3>
+
+@if (SelectedTeam != null)
+{
+    <FluentEditForm Model="@SelectedTeam" OnValidSubmit="HandleValidSubmit">
+
+    <FluentTextField @bind-Value="SelectedTeam.Name" Label="Name"></FluentTextField>
+
+
+
+</FluentEditForm>
+}
+
+@code {
+    [Parameter]
+    public Team? SelectedTeam { get; set; }
+
+    private async void HandleValidSubmit()
+    {
+        
+    }
+
+}

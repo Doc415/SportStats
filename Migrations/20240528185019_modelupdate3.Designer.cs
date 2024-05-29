@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SportStats.Data;
 
@@ -11,9 +12,11 @@ using SportStats.Data;
 namespace SportStats.Migrations
 {
     [DbContext(typeof(StatsContext))]
-    partial class StatsContextModelSnapshot : ModelSnapshot
+    [Migration("20240528185019_modelupdate3")]
+    partial class modelupdate3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,8 +191,7 @@ namespace SportStats.Migrations
                 {
                     b.HasOne("SportStats.Models.Team", "MemberOf")
                         .WithMany("Players")
-                        .HasForeignKey("MemberOfId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("MemberOfId");
 
                     b.Navigation("MemberOf");
                 });
