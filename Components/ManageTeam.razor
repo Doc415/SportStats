@@ -6,6 +6,11 @@
 
     <FluentTextField @bind-Value="SelectedTeam.Name" Label="Name"></FluentTextField>
 
+    @foreach(var player in SelectedTeam.Players)
+        {
+            <p> @player.Name</p>
+        }
+
 
 
 </FluentEditForm>
@@ -14,6 +19,15 @@
 @code {
     [Parameter]
     public Team? SelectedTeam { get; set; }
+    public List<Player> TeamPlayers = new();
+
+    private async Task OnInitializedAsync()
+    {
+        if (SelectedTeam != null)
+        {
+            
+        }
+    }
 
     private async void HandleValidSubmit()
     {
