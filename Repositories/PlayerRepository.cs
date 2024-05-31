@@ -75,7 +75,6 @@ namespace SportStats.Repositories
 
                 playerToUpdate.Surname = player.Surname;
                 playerToUpdate.Name = player.Name;
-                playerToUpdate.IsInTeam = player.IsInTeam;
                 playerToUpdate.BirthDate = player.BirthDate;
                 playerToUpdate.MemberOf = player.MemberOf;
                 _context.Update(playerToUpdate);
@@ -84,6 +83,20 @@ namespace SportStats.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        public async Task<List<Player>> GetAvaiblePlayers()
+        {
+            try
+            {
+                return await _context.Players.Where(x => x.MemberOf == null).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return null;
             }
         }
     }

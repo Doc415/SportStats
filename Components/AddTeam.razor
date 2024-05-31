@@ -1,4 +1,4 @@
-﻿@inject ITeamRepository _repository
+﻿@inject TeamService _teamService
 
 <br/>
 <FluentHeader Style="width:100%">
@@ -18,7 +18,7 @@
 
     public async Task HandleValidSubmit()
     {
-        await _repository.AddTeam(newTeam);
+        await _teamService.AddTeam(newTeam);
         newTeam = new();
     }
 }

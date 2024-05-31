@@ -19,6 +19,9 @@
         <FluentSpacer />
         <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor" target="_blank">About Blazor</a>
     </FluentFooter>
+    <FluentTooltipProvider @rendermode="InteractiveServer" />
+    <FluentToastProvider @rendermode="InteractiveServer" MaxToastCount="1" Timeout="3000" Position="ToastPosition.BottomRight" RemoveToastsOnNavigation="false" />
+    <FluentDialogProvider @rendermode="InteractiveServer" />
 </FluentLayout>
 
 <div id="blazor-error-ui">

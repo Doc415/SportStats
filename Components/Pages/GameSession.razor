@@ -1,46 +1,48 @@
 ﻿@page "/gamesession"
 @rendermode InteractiveServer
 @using Blazor_ApexCharts
+@inject TeamService _teamService
+@inject PlayerService _playerService
 
 <h3>GameSession</h3>
 
+<FluentSelect TOption="Team"
+              Items="@Teams"
+              Id="team-listbox"
+              Disabled="@TeamSelected"
+              OptionValue="@(p => p.Id.ToString())"
+              OptionText="@(p => p.Name)"
+              @bind-SelectedOption="@tempTeam"
+              @onchange="OnSelectedTeamChanged"/>
+
+
+@if(selectedTeam!=null)
+{
 <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="30">
     <div Style="width:600px;height:385px;background-image:url('court.jpg'); background-size:contain">
 
         <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
-
             <FluentButton Id="A1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A1"))></FluentButton>
             <FluentButton Id="B1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B1"))></FluentButton>
             <FluentButton Id="C1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C1"))></FluentButton>
-
-
-
         </FluentStack>
 
         <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
-
             <FluentButton Id="A2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A2"))></FluentButton>
             <FluentButton Id="B2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B2"))></FluentButton>
             <FluentButton Id="C2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C2"))></FluentButton>
-
-
-
         </FluentStack>
 
         <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
-
             <FluentButton Id="A3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A3"))></FluentButton>
             <FluentButton Id="B3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B3"))></FluentButton>
             <FluentButton Id="C3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C3"))></FluentButton>
-
-
-
         </FluentStack>
               
     </div>
 
-    <FluentStack Id="playerselection">
-      
+    @if(locationSelected){
+    <FluentStack Id="playerselection">      
         <FluentListbox TOption="Player"
                        Label="Select player"
                        Items="@IngamePlayers"
@@ -54,15 +56,16 @@
             <OptionTemplate>
                 <FluentIcon Icon="Icons.Regular.Size16.Person" Slot="end" OnClick="@(() =>Console.WriteLine($"Icon for {@context.Surname} selected"))" />
                 @context.Name (@context.Surname)
-            </OptionTemplate>
-                    
-                    
+            </OptionTemplate>                    
         </FluentListbox>
     </FluentStack>
+    }
 
-    <FluentStack Id="statselection">
-
-        <FluentListbox TOption="string"
+        @if (playerSelected)
+        {
+            <FluentStack Id
+            ="statselection">
+                <FluentListbox TOption="string"
                        Label="Select stat"
                        Items="@StatList"
                        Id="stat-listbox"
@@ -73,7 +76,7 @@
                        @bind-Value="@SelectedStat">
         </FluentListbox>
     </FluentStack>
-
+    }
     
   </FluentStack>
 
@@ -88,64 +91,62 @@
                 Items="players"
                 Name="Gross Value"
                 XValue="@(e => e.Name)"
-               
                 OrderByDescending="e=>e.Y"
                 SeriesType="SeriesType.Bar"/>
 
   
 </ApexChart>
-
-
-
-
-
-
-
-
-
+}
 
 @code {
     JustifyContent Justification = JustifyContent.FlexStart;
     int Spacing = 3;
     bool open=true;
     string selectedLocation=string.Empty;
-    List<Player> IngamePlayers=new();
+    List<Player>? IngamePlayers=new();
     string SelectedPlayerId = string.Empty;
     List<string> StatList = new List<string> { "Pass", "Interception", "Shot", "Rebound", "Block" };
     string SelectedStat = string.Empty;
     private string status = "";
     List<Player> players = new();
+    List<Team> Teams = new();
+    Team selectedTeam = new() { Players = new() };
+    bool locationSelected = false;
+    bool playerSelected = false;
+    Team tempTeam = new();
+    string tempTeamId=string.Empty;
+    bool TeamSelected = false;
 
 
 
 
-
-
-
-    void OnBreakpointEnterHandler(GridItemSize size)
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine($"Page Size: {size}");
-
+        Teams = await _teamService.GetTeams();
+        selectedTeam = null;
     }
+
+
+
+    private void OnSelectedTeamChanged(ChangeEventArgs e)
+    {
+        tempTeamId = e.Value.ToString();
+        selectedTeam = Teams.FirstOrDefault(t => t.Id.ToString() == tempTeamId);
+        if (selectedTeam != null)
+        {
+            IngamePlayers = selectedTeam.Players;
+            TeamSelected = true;
+        }
+    }
+
+
+
 
     void SelectLocation(string location)
     {
-
         selectedLocation = location;
+        locationSelected = true;
     }
 
-
-
-    private void OnMenuChange(MenuChangeEventArgs args)
-    {
-        if (args is not null && args.Value is not null)
-            status = $"Item \"{args.Value}\" clicked";
-        Console.WriteLine(status);
-    }
-
-
-   
-
-
-
-}
+ 
+ }

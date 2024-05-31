@@ -1,5 +1,7 @@
-﻿@inject ITeamRepository _repository
+﻿@inject TeamService _teamService
+@inject PlayerService _playerService
 @rendermode InteractiveServer
+
 <h3>Edit Team</h3>
 
 <FluentSelect TOption="Team"
@@ -9,21 +11,18 @@
               OptionText="@(p => p.Name)"
               @bind-SelectedOption="@teamToEdit" />
 
-<ManageTeam SelectedTeam="teamToEdit"></ManageTeam>
+<ManageTeam SelectedTeam="teamToEdit" AvaiblePlayerList="AvaiblePlayerList"></ManageTeam>
 
 
 
 @code {
     List<Team> Teams = new();
     Team teamToEdit = new();
+    List<Player> AvaiblePlayerList = new();
 
     protected override async Task OnInitializedAsync()
     {
-        Teams=await _repository.GetTeams();
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        await _repository.UpdateTeam(teamToEdit);
+        Teams=await _teamService.GetTeams();
+        AvaiblePlayerList = await _playerService.GetAvaiblePlayers();
     }
 }

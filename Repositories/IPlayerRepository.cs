@@ -9,4 +9,5 @@ public interface IPlayerRepository
     Task DeletePlayer(int id);
     Task UpdatePlayer(Player player);
     Task AddPlayer(Player player);
+    Task<List<Player>> GetAvaiblePlayers();
 }

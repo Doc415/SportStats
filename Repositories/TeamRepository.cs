@@ -38,7 +38,7 @@ namespace SportStats.Repositories
               
                 foreach (var player in playersOfTeam)
                 {
-                    player.IsInTeam = false;
+                    player.MemberOf = null;
                     _context.Players.Update(player);
                 }
                 await _context.SaveChangesAsync();
@@ -75,9 +75,18 @@ namespace SportStats.Repositories
             }
         }
 
-        public Task UpdateTeam(Team team)
+        public async  Task UpdateTeam(Team team)
         {
-            throw new NotImplementedException();
+           var teamToUpdate=await _context.Teams.FindAsync(team.Id);
+           teamToUpdate.Id= team.Id;
+            teamToUpdate.Name= team.Name;
+            teamToUpdate.Players = team.Players;
+            _context.Teams.Update(team);
+            await _context.SaveChangesAsync();
         }
+
+       
+           
+
     }
 }

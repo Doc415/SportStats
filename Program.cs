@@ -3,6 +3,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using SportStats.Components;
 using SportStats.Data;
 using SportStats.Repositories;
+using SportStats.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<StatsContext>(options =>
                                                      options.UseSqlServer(connectionString));
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<TeamService> ();
+builder.Services.AddScoped<PlayerService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
