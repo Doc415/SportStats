@@ -42,30 +42,30 @@
         </FluentStack>
               
     </div>
-
-    @if(locationSelected){
-    <FluentStack Id="playerselection">      
-        <FluentListbox TOption="Player"
-                       Label="Select player"
-                       Items="@IngamePlayers"
-                       Id="player-listbox"
-                       Height="385px"
-                       Width="200px"
-                       Multiple="false"
-                       OptionValue="@(p => p.Id.ToString())"
-                       OptionText="@(p => p.Surname + " " + p.Name)"
-                       ValueChanged="playerchanged"
-                       @bind-SelectedOption="tempPlayer"
-                      >
-            <OptionTemplate>
-                <FluentIcon Icon="Icons.Regular.Size16.Person" Slot="end" OnClick="@(() =>Console.WriteLine($"Icon for {@context.Surname} selected"))" />
-                @context.Surname (@context.Name)
-            </OptionTemplate>                    
-        </FluentListbox>
-    </FluentStack>
-
-    <p>@selectedPlayer.Name</p>
-    }
+        
+   <div>
+            @if (locationSelected)
+            {
+                <FluentStack Id="playerselection">
+                    <FluentListbox TOption="Player"
+                                   Label="Select player"
+                                   Items="@IngamePlayers"
+                                   Id="player-listbox"
+                                   Height="385px"
+                                   Width="200px"
+                                   Multiple="false"
+                                   OptionValue="@(p => p.Id.ToString())"
+                                   OptionText="@(p => p.Surname + " " + p.Name)"
+                                   ValueChanged="PlayerChanged"
+                                   @bind-SelectedOption="tempPlayer">
+                        <OptionTemplate>
+                            <FluentIcon Icon="Icons.Regular.Size16.Person" Slot="end" OnClick="@(() =>Console.WriteLine($"Icon for {@context.Surname} selected"))" />
+                            @context.Surname (@context.Name)
+                        </OptionTemplate>
+                    </FluentListbox>
+                </FluentStack>
+            }
+        </div>
 
         @if (playerSelected)
         {
@@ -78,23 +78,34 @@
                        Width="200px"
                        OptionValue="@(p => p)"
                        OptionText="@(p => p)"
-                       @bind-Value="@SelectedStat">
-        </FluentListbox>
-    </FluentStack>
-    }
-    
+                       ValueChanged="StatChanged"
+                       @bind-SelectedOption="tempStat"
+                       >
+               </FluentListbox>
+           </FluentStack>
+        
+        }
+
+        @if (statSelected)
+        {
+            <FluentStack>
+                <FluentButton Type="ButtonType.Button" OnClick="HandleValidSubmit">Submit</FluentButton>
+            </FluentStack>
+        }
+        
   </FluentStack>
 
 
 
+
   <ApexChart TItem="Player"
-           Title="Order Net Value"
+           Title="Stats"
            Width="300"
            Height="300">
 
     <ApexPointSeries TItem="Player"
                 Items="players"
-                Name="Gross Value"
+                Name="Block"
                 XValue="@(e => e.Name)"
                 OrderByDescending="e=>e.Y"
                 SeriesType="SeriesType.Bar"/>
@@ -123,17 +134,30 @@
     bool GameStarted = false;
     Player tempPlayer = new();
     Player selectedPlayer = new();
-    bool firstLoad = true;
+    bool playerFirstLoad = true;
+    bool statFirstLoad = true;
+    bool statSelected = false;
+    string tempStat = string.Empty;
 
-
-    private void playerchanged()
+    private void PlayerChanged()
     {
-        if(firstLoad){
-            firstLoad = !firstLoad;
+        if(playerFirstLoad){
+            playerFirstLoad = !playerFirstLoad;
             return;
         }
         selectedPlayer = tempPlayer;
         playerSelected = true;
+    }
+
+    private void StatChanged()
+    {
+        if (statFirstLoad)
+        {
+            statFirstLoad = !statFirstLoad;
+            return;
+        }
+        SelectedStat=tempStat;
+        statSelected = true;
     }
 
     protected override async Task OnInitializedAsync()
@@ -167,6 +191,23 @@
     {
         if (selectedTeam != null)
             GameStarted = true;
+    }
+
+    private void HandleValidSubmit()
+    {
+        ResetFlags();
+    }
+
+    private void ResetFlags()
+    {
+        locationSelected = false;
+        playerSelected = false;
+        statSelected = false;
+        selectedLocation = string.Empty;
+        selectedPlayer = null;
+        SelectedStat = null;
+        playerFirstLoad = true;
+        statFirstLoad = true;
     }
 
  
