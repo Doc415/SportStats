@@ -4,6 +4,8 @@
 @inject TeamService _teamService
 @inject PlayerService _playerService
 @inject StatService _statService
+@inject GameService _gameService
+@inject NavigationManager navManager
 
 <h3>Select Team</h3>
 
@@ -15,8 +17,16 @@
               OptionText="@(p => p.Name)"
               @bind-SelectedOption="@tempTeam"
               @onchange="OnSelectedTeamChanged"/>
+<FluentTextField Label="Opponent"Immediate="true" @bind-Value="Opponent"></FluentTextField>
 
-<FluentButton Type="ButtonType.Button" OnClick="StartSession"> Start Game Session</FluentButton>
+@if (!GameStarted)
+{
+    <FluentButton Type="ButtonType.Button" OnClick="StartSession"> Start Game Session</FluentButton>
+}
+else
+{
+    <FluentButton Type="ButtonType.Button" OnClick="EndSession"> End Game Session</FluentButton>
+}
 
 
 @if(GameStarted)
@@ -118,6 +128,8 @@
 
 @code {
     JustifyContent Justification = JustifyContent.FlexStart;
+    Game CurrentGame = new();
+    Game NewGame = new();
     int Spacing = 3;
     bool open=true;
     string selectedLocation=string.Empty;
@@ -140,6 +152,7 @@
     bool statFirstLoad = true;
     bool statSelected = false;
     string tempStat = string.Empty;
+    string Opponent=string.Empty;
 
     private void PlayerChanged()
     {
@@ -180,19 +193,31 @@
         }
     }
 
-
-
-
     void SelectLocation(string location)
     {
         selectedLocation = location;
         locationSelected = true;
     }
 
-    private void StartSession()
+    private async void StartSession()
     {
-        if (selectedTeam != null)
+        if (selectedTeam != null && !string.IsNullOrEmpty(Opponent))
+        {
+            NewGame.DateTime = DateTime.Now;
+            NewGame.PlayedAgainst = Opponent;
+            NewGame.OwnTeam = selectedTeam;
+            CurrentGame=await _gameService.AddGame(NewGame);
+
             GameStarted = true;
+            StateHasChanged();
+        }
+
+    }
+
+    private async void EndSession()
+    {
+        CurrentGame = null;
+        navManager.NavigateTo("/", true);
     }
 
     private async void HandleValidSubmit()
@@ -231,6 +256,7 @@
         }
         newStat.BelongsTo = selectedPlayer;
         newStat.Location = selectedLocation;
+        newStat.InGame = CurrentGame;
         //buraya stat.InGame=selectedGame eklenecek, selected game basta db kaydedilip tekrar id si ile alınacak
         await _statService.AddStat(newStat);
 
@@ -247,6 +273,7 @@
         SelectedStat = null;
         playerFirstLoad = true;
         statFirstLoad = true;
+        StateHasChanged();
     }
 
  
