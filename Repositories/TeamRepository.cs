@@ -66,7 +66,7 @@ namespace SportStats.Repositories
         {
             try
             {
-                return await _context.Teams.Include(x=> x.Players).ToListAsync();
+                return await _context.Teams.Include(x=> x.Players).ThenInclude(player => player.Stats).ToListAsync();
             }
             catch(Exception ex) 
             {
