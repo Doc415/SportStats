@@ -4,19 +4,21 @@
 @inject TeamService _teamService
 @inject PlayerService _playerService
 
-<h3>GameSession</h3>
+<h3>Select Team</h3>
 
 <FluentSelect TOption="Team"
               Items="@Teams"
               Id="team-listbox"
-              Disabled="@TeamSelected"
+              Disabled="@GameStarted"
               OptionValue="@(p => p.Id.ToString())"
               OptionText="@(p => p.Name)"
               @bind-SelectedOption="@tempTeam"
               @onchange="OnSelectedTeamChanged"/>
 
+<FluentButton Type="ButtonType.Button" OnClick="StartSession"> Start Game Session</FluentButton>
 
-@if(selectedTeam!=null)
+
+@if(GameStarted)
 {
 <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="30">
     <div Style="width:600px;height:385px;background-image:url('court.jpg'); background-size:contain">
@@ -49,22 +51,25 @@
                        Id="player-listbox"
                        Height="385px"
                        Width="200px"
+                       Multiple="false"
                        OptionValue="@(p => p.Id.ToString())"
                        OptionText="@(p => p.Surname + " " + p.Name)"
-                       @bind-Value="@SelectedPlayerId"
-                        >
+                       ValueChanged="playerchanged"
+                       @bind-SelectedOption="tempPlayer"
+                      >
             <OptionTemplate>
                 <FluentIcon Icon="Icons.Regular.Size16.Person" Slot="end" OnClick="@(() =>Console.WriteLine($"Icon for {@context.Surname} selected"))" />
-                @context.Name (@context.Surname)
+                @context.Surname (@context.Name)
             </OptionTemplate>                    
         </FluentListbox>
     </FluentStack>
+
+    <p>@selectedPlayer.Name</p>
     }
 
         @if (playerSelected)
         {
-            <FluentStack Id
-            ="statselection">
+            <FluentStack Id="statselection">
                 <FluentListbox TOption="string"
                        Label="Select stat"
                        Items="@StatList"
@@ -115,10 +120,21 @@
     bool playerSelected = false;
     Team tempTeam = new();
     string tempTeamId=string.Empty;
-    bool TeamSelected = false;
+    bool GameStarted = false;
+    Player tempPlayer = new();
+    Player selectedPlayer = new();
+    bool firstLoad = true;
 
 
-
+    private void playerchanged()
+    {
+        if(firstLoad){
+            firstLoad = !firstLoad;
+            return;
+        }
+        selectedPlayer = tempPlayer;
+        playerSelected = true;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -135,7 +151,6 @@
         if (selectedTeam != null)
         {
             IngamePlayers = selectedTeam.Players;
-            TeamSelected = true;
         }
     }
 
@@ -146,6 +161,12 @@
     {
         selectedLocation = location;
         locationSelected = true;
+    }
+
+    private void StartSession()
+    {
+        if (selectedTeam != null)
+            GameStarted = true;
     }
 
  
