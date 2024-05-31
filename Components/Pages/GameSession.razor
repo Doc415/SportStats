@@ -3,6 +3,7 @@
 @using Blazor_ApexCharts
 @inject TeamService _teamService
 @inject PlayerService _playerService
+@inject StatService _statService
 
 <h3>Select Team</h3>
 
@@ -92,8 +93,9 @@
                 <FluentButton Type="ButtonType.Button" OnClick="HandleValidSubmit">Submit</FluentButton>
             </FluentStack>
         }
-        
   </FluentStack>
+
+
 
 
 
@@ -193,8 +195,45 @@
             GameStarted = true;
     }
 
-    private void HandleValidSubmit()
+    private async void HandleValidSubmit()
     {
+        BaseStat newStat;
+        switch (SelectedStat)
+        {
+            case "Pass":
+                {
+                    newStat = new Pass();
+                }
+                break;
+            case "Shot":
+                {
+                    newStat = new Shot();
+                }
+                break;
+            case "Interception":
+                {
+                    newStat = new Interception();
+                }
+                break;
+            case "Rebound":
+                {
+                    newStat = new Rebound();
+                }
+                break;
+            case "Block":
+                {
+                    newStat = new Block();
+                }
+                break;
+            default:
+                return;
+                break;
+        }
+        newStat.BelongsTo = selectedPlayer;
+        newStat.Location = selectedLocation;
+        //buraya stat.InGame=selectedGame eklenecek, selected game basta db kaydedilip tekrar id si ile alınacak
+        await _statService.AddStat(newStat);
+
         ResetFlags();
     }
 

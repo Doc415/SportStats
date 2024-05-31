@@ -1,0 +1,9 @@
+﻿using SportStats.Models;
+
+namespace SportStats.Repositories
+{
+    public interface IStatRepository
+    {
+        Task AddStat(BaseStat stat);
+    }
+}
