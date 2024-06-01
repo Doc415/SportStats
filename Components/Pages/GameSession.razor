@@ -186,7 +186,7 @@ else
         Teams.Insert(0,new Team() { Name = "---Select Team---", Id = -1 });
     }
 
-    
+
     private void OnSelectedTeamChanged(ChangeEventArgs e)
     {
         tempTeamId = e.Value.ToString();
@@ -213,11 +213,11 @@ else
                 var tempChartModel = new PlayerChartModel();
                 tempChartModel.Id = player.Id;
                 tempChartModel.StatList = new();
-                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Pass, Count=new Random().Next(1,10) });
-                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Shot, Count = new Random().Next(1, 10) });
-                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Block, Count = new Random().Next(1, 10) });
-                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Rebound, Count = new Random().Next(1, 10) });
-                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Interception, Count = new Random().Next(1, 10) });
+                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Pass });
+                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Shot });
+                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Block});
+                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Rebound });
+                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Interception });
                 series.Add(tempChartModel);
             }
 
