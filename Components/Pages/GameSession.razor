@@ -119,7 +119,8 @@ else
                    TItem="StatChartModel"
                    Title="Stats"
                    Width="600"
-                   Height="600">
+                   Height="600"
+                   Options=options>
 
             @foreach (var player in series)
             {
@@ -166,6 +167,7 @@ else
     string Opponent = string.Empty;
     private ApexChart<StatChartModel> chart;
     bool OpponentInputDisabled = false;
+    private ApexChartOptions<StatChartModel> options;
 
     private void PlayerChanged()
     {
@@ -191,8 +193,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        Teams = await _teamService.GetTeams();
-        Teams.Insert(0, new Team() { Name = "---Select Team---", Id = -1 });
+        Teams = await _teamService.GetTeams();       
+        selectedTeam = Teams[0];
+        IngamePlayers = selectedTeam.Players;
+        options = new ApexChartOptions<StatChartModel>
+            {
+                Theme = new Theme
+                {
+                    Mode = Mode.Dark,
+                    Palette = PaletteType.Palette7
+                }
+            };
     }
 
 
