@@ -183,16 +183,15 @@ else
     protected override async Task OnInitializedAsync()
     {
         Teams = await _teamService.GetTeams();
-        selectedTeam = Teams[0];
+        Teams.Insert(0,new Team() { Name = "---Select Team---", Id = -1 });
     }
 
-
-
+    
     private void OnSelectedTeamChanged(ChangeEventArgs e)
     {
         tempTeamId = e.Value.ToString();
         selectedTeam = Teams.FirstOrDefault(t => t.Id.ToString() == tempTeamId);
-        if (selectedTeam != null)
+        if (selectedTeam != null && selectedTeam.Id!=-1)
         {
             IngamePlayers = selectedTeam.Players;
 
@@ -207,7 +206,7 @@ else
 
     private async void StartSession()
     {
-        if (selectedTeam != null && !string.IsNullOrEmpty(Opponent))
+        if (selectedTeam != null && !string.IsNullOrEmpty(Opponent) && selectedTeam.Id!=-1)
         {
             foreach (var player in IngamePlayers)
             {
@@ -226,7 +225,6 @@ else
             NewGame.PlayedAgainst = Opponent;
             NewGame.OwnTeam = selectedTeam;
             CurrentGame=await _gameService.AddGame(NewGame);
-
             GameStarted = true;
             StateHasChanged();
         }
@@ -292,7 +290,7 @@ else
         newStat.Location = selectedLocation;
         newStat.InGame = CurrentGame;
         await _statService.AddStat(newStat);
-        
+
 
         await ResetFlags();
     }
@@ -303,10 +301,12 @@ else
         playerSelected = false;
         statSelected = false;
         selectedLocation = string.Empty;
-        selectedPlayer = IngamePlayers[0];
+        selectedPlayer = null;
         SelectedStat = null;
         playerFirstLoad = true;
         statFirstLoad = true;
+        tempPlayer = null;
+        tempStat = null;
         await chart!.UpdateSeriesAsync(true);
         StateHasChanged();
     }
