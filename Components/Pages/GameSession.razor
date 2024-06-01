@@ -17,8 +17,8 @@
               OptionValue="@(p => p.Id.ToString())"
               OptionText="@(p => p.Name)"
               @bind-SelectedOption="@tempTeam"
-              @onchange="OnSelectedTeamChanged"/>
-<FluentTextField Label="Opponent"Immediate="true" @bind-Value="Opponent"></FluentTextField>
+              @onchange="OnSelectedTeamChanged" />
+<FluentTextField Label="Opponent" Immediate="true" @bind-Value="Opponent" Disabled="@OpponentInputDisabled"></FluentTextField>
 
 @if (!GameStarted)
 {
@@ -30,103 +30,110 @@ else
 }
 
 
-@if(GameStarted)
+@if (GameStarted)
 {
-<FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="30">
-    <div Style="width:600px;height:385px;background-image:url('court.jpg'); background-size:contain">
+    <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
 
-        <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
-            <FluentButton Id="A1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A1"))></FluentButton>
-            <FluentButton Id="B1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B1"))></FluentButton>
-            <FluentButton Id="C1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C1"))></FluentButton>
-        </FluentStack>
-
-        <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
-            <FluentButton Id="A2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A2"))></FluentButton>
-            <FluentButton Id="B2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B2"))></FluentButton>
-            <FluentButton Id="C2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C2"))></FluentButton>
-        </FluentStack>
-
-        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
-            <FluentButton Id="A3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A3"))></FluentButton>
-            <FluentButton Id="B3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B3"))></FluentButton>
-            <FluentButton Id="C3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C3"))></FluentButton>
-        </FluentStack>
-              
-    </div>
-        
-   <div>
-            @if (locationSelected)
-            {
-                <FluentStack Id="playerselection">
-                    <FluentListbox TOption="Player"
-                                   Label="Select player"
-                                   Items="@IngamePlayers"
-                                   Id="player-listbox"
-                                   Height="385px"
-                                   Width="200px"
-                                   Multiple="false"
-                                   OptionValue="@(p => p.Id.ToString())"
-                                   OptionText="@(p => p.Surname + " " + p.Name)"
-                                   ValueChanged="PlayerChanged"
-                                   @bind-SelectedOption="tempPlayer">
-                        <OptionTemplate>
-                            <FluentIcon Icon="Icons.Regular.Size16.Person" Slot="end" OnClick="@(() =>Console.WriteLine($"Icon for {@context.Surname} selected"))" />
-                            @context.Surname (@context.Name)
-                        </OptionTemplate>
-                    </FluentListbox>
-                </FluentStack>
-            }
-        </div>
-
-        @if (playerSelected)
-        {
-            <FluentStack Id="statselection">
-                <FluentListbox TOption="string"
-                       Label="Select stat"
-                       Items="@StatList"
-                       Id="stat-listbox"
-                       Height="385px"
-                       Width="200px"
-                       OptionValue="@(p => p)"
-                       OptionText="@(p => p)"
-                       ValueChanged="StatChanged"
-                       @bind-SelectedOption="tempStat"
-                       >
-               </FluentListbox>
-           </FluentStack>
-        
-        }
-
-        @if (statSelected)
-        {
-            <FluentStack>
-                <FluentButton Type="ButtonType.Button" OnClick="HandleValidSubmit">Submit</FluentButton>
-            </FluentStack>
-        }
-  </FluentStack>
-
-
-
-
-
-
-    <ApexChart @ref="chart"
-           TItem="StatChartModel"
-           Title="Stats"
-           Width="300"
-           Height="300">
+       
+        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" HorizontalGap="10">
            
-           @foreach (var player in series)
-        {
-            <ApexPointSeries 
-                             Name="@player.Id.ToString()" 
-                             Items="@player.StatList" 
-                             XValue="@(e=> e.Type)" 
-                             YValue="@(e => e.Count)"
-                             SeriesType="SeriesType.Bar" />
-           }
-</ApexChart>
+            <div Style="width:600px;height:385px;background-image:url('court.jpg'); background-size:contain">
+
+                <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
+                    <FluentButton Id="A1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A1"))></FluentButton>
+                    <FluentButton Id="B1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B1"))></FluentButton>
+                    <FluentButton Id="C1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C1"))></FluentButton>
+                </FluentStack>
+
+                <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
+                    <FluentButton Id="A2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A2"))></FluentButton>
+                    <FluentButton Id="B2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B2"))></FluentButton>
+                    <FluentButton Id="C2" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C2"))></FluentButton>
+                </FluentStack>
+
+                <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
+                    <FluentButton Id="A3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A3"))></FluentButton>
+                    <FluentButton Id="B3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("B3"))></FluentButton>
+                    <FluentButton Id="C3" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:120px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("C3"))></FluentButton>
+                </FluentStack>
+
+            </div>
+
+            <div>
+                <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
+                    @if (locationSelected)
+                    {
+                        <FluentStack Id="playerselection">
+                            <FluentListbox TOption="Player"
+                                           Label="Select player"
+                                           Items="@IngamePlayers"
+                                           Id="player-listbox"
+                                           Height="300px"
+                                           Width="200px"
+                                           Multiple="false"
+                                           OptionValue="@(p => p.Id.ToString())"
+                                           OptionText="@(p => p.Surname + " " + p.Name)"
+                                           ValueChanged="PlayerChanged"
+                                           @bind-SelectedOption="tempPlayer">
+                                <OptionTemplate>
+                                    <FluentIcon Icon="Icons.Regular.Size16.Person" Slot="end" OnClick="@(() =>Console.WriteLine($"Icon for {@context.Surname} selected"))" />
+                                    @context.Surname (@context.Name)
+                                </OptionTemplate>
+                            </FluentListbox>
+                        </FluentStack>
+                    }
+
+
+                    @if (playerSelected)
+                    {
+                        <FluentStack Id="statselection">
+                            <FluentListbox TOption="string"
+                                           Label="Select stat"
+                                           Items="@StatList"
+                                           Id="stat-listbox"
+                                           Height="300px"
+                                           Width="200px"
+                                           OptionValue="@(p => p)"
+                                           OptionText="@(p => p)"
+                                           ValueChanged="StatChanged"
+                                           @bind-SelectedOption="tempStat">
+                            </FluentListbox>
+                        </FluentStack>
+
+                    }
+
+                    @if (statSelected)
+                    {
+                        <FluentStack>
+                            <FluentButton Type="ButtonType.Button" OnClick="HandleValidSubmit">Submit</FluentButton>
+                        </FluentStack>
+                    }
+                </FluentStack>
+
+
+            </div>
+        </FluentStack>
+   
+      
+        <ApexChart @ref="chart"
+                   TItem="StatChartModel"
+                   Title="Stats"
+                   Width="600"
+                   Height="600">
+
+            @foreach (var player in series)
+            {
+                <ApexPointSeries Name="@player.Id.ToString()"
+                                 Items="@player.StatList"
+                                 XValue="@(e=> e.Type)"
+                                 YValue="@(e => e.Count)"
+                                 SeriesType="SeriesType.Bar" />
+            }
+        </ApexChart>
+
+    </FluentStack>
+
+
 }
 
 @code {
@@ -135,9 +142,9 @@ else
     Game CurrentGame = new();
     Game NewGame = new();
     int Spacing = 3;
-    bool open=true;
-    string selectedLocation=string.Empty;
-    List<Player>? IngamePlayers=new();
+    bool open = true;
+    string selectedLocation = string.Empty;
+    List<Player>? IngamePlayers = new();
     string SelectedPlayerId = string.Empty;
     List<string> StatList = new List<string> { "Pass", "Interception", "Shot", "Rebound", "Block" };
     string SelectedStat = string.Empty;
@@ -148,7 +155,7 @@ else
     bool locationSelected = false;
     bool playerSelected = false;
     Team tempTeam = new();
-    string tempTeamId=string.Empty;
+    string tempTeamId = string.Empty;
     bool GameStarted = false;
     Player tempPlayer = new();
     Player selectedPlayer = new();
@@ -156,12 +163,14 @@ else
     bool statFirstLoad = true;
     bool statSelected = false;
     string tempStat = string.Empty;
-    string Opponent=string.Empty;
+    string Opponent = string.Empty;
     private ApexChart<StatChartModel> chart;
+    bool OpponentInputDisabled = false;
 
     private void PlayerChanged()
     {
-        if(playerFirstLoad){
+        if (playerFirstLoad)
+        {
             playerFirstLoad = !playerFirstLoad;
             return;
         }
@@ -176,14 +185,14 @@ else
             statFirstLoad = !statFirstLoad;
             return;
         }
-        SelectedStat=tempStat;
+        SelectedStat = tempStat;
         statSelected = true;
     }
 
     protected override async Task OnInitializedAsync()
     {
         Teams = await _teamService.GetTeams();
-        Teams.Insert(0,new Team() { Name = "---Select Team---", Id = -1 });
+        Teams.Insert(0, new Team() { Name = "---Select Team---", Id = -1 });
     }
 
 
@@ -191,7 +200,7 @@ else
     {
         tempTeamId = e.Value.ToString();
         selectedTeam = Teams.FirstOrDefault(t => t.Id.ToString() == tempTeamId);
-        if (selectedTeam != null && selectedTeam.Id!=-1)
+        if (selectedTeam != null && selectedTeam.Id != -1)
         {
             IngamePlayers = selectedTeam.Players;
 
@@ -206,7 +215,7 @@ else
 
     private async void StartSession()
     {
-        if (selectedTeam != null && !string.IsNullOrEmpty(Opponent) && selectedTeam.Id!=-1)
+        if (selectedTeam != null && !string.IsNullOrEmpty(Opponent) && selectedTeam.Id != -1)
         {
             foreach (var player in IngamePlayers)
             {
@@ -215,7 +224,7 @@ else
                 tempChartModel.StatList = new();
                 tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Pass });
                 tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Shot });
-                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Block});
+                tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Block });
                 tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Rebound });
                 tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Interception });
                 series.Add(tempChartModel);
@@ -224,7 +233,8 @@ else
             NewGame.DateTime = DateTime.Now;
             NewGame.PlayedAgainst = Opponent;
             NewGame.OwnTeam = selectedTeam;
-            CurrentGame=await _gameService.AddGame(NewGame);
+            CurrentGame = await _gameService.AddGame(NewGame);
+            OpponentInputDisabled = true;
             GameStarted = true;
             StateHasChanged();
         }
@@ -295,7 +305,7 @@ else
         await ResetFlags();
     }
 
-    private async Task  ResetFlags()
+    private async Task ResetFlags()
     {
         locationSelected = false;
         playerSelected = false;
@@ -310,6 +320,4 @@ else
         await chart!.UpdateSeriesAsync(true);
         StateHasChanged();
     }
-
- 
- }
+}
