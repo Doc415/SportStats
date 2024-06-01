@@ -111,31 +111,27 @@ else
 
 
 
-  <ApexChart TItem="StatChartModel"
+    <ApexChart @ref="chart"
+           TItem="StatChartModel"
            Title="Stats"
            Width="300"
            Height="300">
            
-           @foreach (var player in playersChart)
-           {
-           <ApexPointSeries TItem="StatChartModel" 
-                            Name="@player.Id.ToString()" 
-                            Items="@player.StatList" 
-                            XValue="@(e=> e.Type)" 
-                            YValue="@(e => e.Count)"
+           @foreach (var player in series)
+        {
+            <ApexPointSeries 
+                             Name="@player.Id.ToString()" 
+                             Items="@player.StatList" 
+                             XValue="@(e=> e.Type)" 
+                             YValue="@(e => e.Count)"
                              SeriesType="SeriesType.Bar" />
            }
-
-       
-      
-
-  
 </ApexChart>
 }
 
 @code {
     JustifyContent Justification = JustifyContent.FlexStart;
-    List<PlayerChartModel> playersChart = new();
+    List<PlayerChartModel> series = new();
     Game CurrentGame = new();
     Game NewGame = new();
     int Spacing = 3;
@@ -161,6 +157,7 @@ else
     bool statSelected = false;
     string tempStat = string.Empty;
     string Opponent=string.Empty;
+    private ApexChart<StatChartModel> chart;
 
     private void PlayerChanged()
     {
@@ -186,7 +183,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         Teams = await _teamService.GetTeams();
-        selectedTeam = null;
+        selectedTeam = Teams[0];
     }
 
 
@@ -198,7 +195,7 @@ else
         if (selectedTeam != null)
         {
             IngamePlayers = selectedTeam.Players;
-           
+
         }
     }
 
@@ -222,7 +219,7 @@ else
                 tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Block, Count = new Random().Next(1, 10) });
                 tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Rebound, Count = new Random().Next(1, 10) });
                 tempChartModel.StatList.Add(new StatChartModel() { Type = StatType.Interception, Count = new Random().Next(1, 10) });
-                playersChart.Add(tempChartModel);
+                series.Add(tempChartModel);
             }
 
             NewGame.DateTime = DateTime.Now;
@@ -250,26 +247,41 @@ else
             case "Pass":
                 {
                     newStat = new Pass();
+                    var PlayerChart = series.Single(player => player.Id == selectedPlayer.Id);
+                    var Stat = PlayerChart.StatList.Single(Stat => Stat.Type == StatType.Pass);
+                    Stat.Count++;
                 }
                 break;
             case "Shot":
                 {
                     newStat = new Shot();
+                    var PlayerChart = series.Single(player => player.Id == selectedPlayer.Id);
+                    var Stat = PlayerChart.StatList.Single(Stat => Stat.Type == StatType.Shot);
+                    Stat.Count++;
                 }
                 break;
             case "Interception":
                 {
                     newStat = new Interception();
+                    var PlayerChart = series.Single(player => player.Id == selectedPlayer.Id);
+                    var Stat = PlayerChart.StatList.Single(Stat => Stat.Type == StatType.Interception);
+                    Stat.Count++;
                 }
                 break;
             case "Rebound":
                 {
                     newStat = new Rebound();
+                    var PlayerChart = series.Single(player => player.Id == selectedPlayer.Id);
+                    var Stat = PlayerChart.StatList.Single(Stat => Stat.Type == StatType.Rebound);
+                    Stat.Count++;
                 }
                 break;
             case "Block":
                 {
                     newStat = new Block();
+                    var PlayerChart = series.Single(player => player.Id == selectedPlayer.Id);
+                    var Stat = PlayerChart.StatList.Single(Stat => Stat.Type == StatType.Block);
+                    Stat.Count++;
                 }
                 break;
             default:
@@ -280,20 +292,22 @@ else
         newStat.Location = selectedLocation;
         newStat.InGame = CurrentGame;
         await _statService.AddStat(newStat);
+        
 
-        ResetFlags();
+        await ResetFlags();
     }
 
-    private void ResetFlags()
+    private async Task  ResetFlags()
     {
         locationSelected = false;
         playerSelected = false;
         statSelected = false;
         selectedLocation = string.Empty;
-        selectedPlayer = null;
+        selectedPlayer = IngamePlayers[0];
         SelectedStat = null;
         playerFirstLoad = true;
         statFirstLoad = true;
+        await chart!.UpdateSeriesAsync(true);
         StateHasChanged();
     }
 
