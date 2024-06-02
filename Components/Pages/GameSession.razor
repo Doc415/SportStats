@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using Blazor_ApexCharts
 @using SportStats.Enums
+
 @inject TeamService _teamService
 @inject PlayerService _playerService
 @inject StatService _statService
@@ -108,10 +109,9 @@ else
                     }
                 </FluentStack>
 
-
             </div>
         </FluentStack>
-
+        <GameTime></GameTime>
 
         <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" Width="38%">
             <ApexChart @ref="chart"
@@ -132,7 +132,8 @@ else
             </ApexChart>
 
             <FluentTextArea Rows="15" Cols="72" Placeholder="Game notes"></FluentTextArea>
-            <FluentButton l Type="ButtonType.Button" OnClick="EndSession"> End Game Session</FluentButton>
+            <FluentButton Type="ButtonType.Button" OnClick="EndSession"> End Game Session</FluentButton>
+ 
 
             </FluentStack>
 
@@ -174,6 +175,8 @@ else
     private ApexChart<StatChartModel> chart;
     bool OpponentInputDisabled = false;
     private ApexChartOptions<StatChartModel> options;
+    
+
 
     private void PlayerChanged()
     {
@@ -210,7 +213,7 @@ else
                     Palette = PaletteType.Palette7
                 }
             };
-    }
+           }
 
 
     private void OnSelectedTeamChanged(ChangeEventArgs e)
