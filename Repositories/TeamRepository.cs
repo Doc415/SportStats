@@ -1,10 +1,10 @@
-﻿using SportStats.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using SportStats.Data;
-using Microsoft.EntityFrameworkCore;
+using SportStats.Models;
 
 namespace SportStats.Repositories
 {
-   
+
     public class TeamRepository : ITeamRepository
     {
         public StatsContext _context;
@@ -13,7 +13,7 @@ namespace SportStats.Repositories
         {
             _context = context;
         }
-               
+
         public async Task AddTeam(Team team)
         {
             try
@@ -25,17 +25,17 @@ namespace SportStats.Repositories
             {
                 Console.Error.WriteLine(ex.Message);
             }
-           
+
         }
 
         public async Task DeleteTeam(int id)
         {
             try
             {
-                var teamToDelete= await _context.Teams.FindAsync(id);
+                var teamToDelete = await _context.Teams.FindAsync(id);
                 var playersOfTeam = await _context.Players.Where(x => x.MemberOf == teamToDelete).ToListAsync();
                 _context.Teams.Remove(teamToDelete);
-              
+
                 foreach (var player in playersOfTeam)
                 {
                     player.MemberOf = null;
@@ -66,27 +66,27 @@ namespace SportStats.Repositories
         {
             try
             {
-                return await _context.Teams.Include(x=> x.Players).ThenInclude(player => player.Stats).ToListAsync();
+                return await _context.Teams.Include(x => x.Players).ThenInclude(player => player.Stats).ToListAsync();
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 Console.Error.WriteLine(ex.Message);
                 return null;
             }
         }
 
-        public async  Task UpdateTeam(Team team)
+        public async Task UpdateTeam(Team team)
         {
-           var teamToUpdate=await _context.Teams.FindAsync(team.Id);
-           teamToUpdate.Id= team.Id;
-            teamToUpdate.Name= team.Name;
+            var teamToUpdate = await _context.Teams.FindAsync(team.Id);
+            teamToUpdate.Id = team.Id;
+            teamToUpdate.Name = team.Name;
             teamToUpdate.Players = team.Players;
             _context.Teams.Update(team);
             await _context.SaveChangesAsync();
         }
 
-       
-           
+
+
 
     }
 }

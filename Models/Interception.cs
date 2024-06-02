@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SportStats.Models;
 
-public class Interception:BaseStat
+public class Interception : BaseStat
 {
 
     public int Id { get; set; }

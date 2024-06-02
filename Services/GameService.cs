@@ -12,5 +12,5 @@ public class GameService
         _gameRepository = gameRepository;
     }
     public async Task<Game> AddGame(Game game)
-    {  return await _gameRepository.AddGame(game);}
+    { return await _gameRepository.AddGame(game); }
 }

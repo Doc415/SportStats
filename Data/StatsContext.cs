@@ -3,7 +3,7 @@ using SportStats.Models;
 
 namespace SportStats.Data;
 
-public class StatsContext:DbContext
+public class StatsContext : DbContext
 {
     public StatsContext(DbContextOptions<StatsContext> options) : base(options) { }
 
@@ -32,7 +32,7 @@ public class StatsContext:DbContext
     b.Navigation("MemberOf");
 });
 
-      
+
 
         base.OnModelCreating(modelBuilder);
     }

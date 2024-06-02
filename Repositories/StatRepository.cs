@@ -3,7 +3,7 @@ using SportStats.Models;
 
 namespace SportStats.Repositories;
 
-public class StatRepository:IStatRepository
+public class StatRepository : IStatRepository
 {
     public StatsContext _context;
 

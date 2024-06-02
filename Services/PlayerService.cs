@@ -24,7 +24,7 @@ public class PlayerService
 
     public async Task<Player> GetPlayerById(int id)
     {
-       return  await _repository.GetPlayerById(id);
+        return await _repository.GetPlayerById(id);
     }
 
     public async Task<List<Player>> GetPlayers()

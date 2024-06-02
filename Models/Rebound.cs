@@ -8,7 +8,7 @@ namespace SportStats.Models
         public int Id { get; set; }
         [Required]
         public Game InGame { get; set; }
-      
+
         [Required]
         public Player BelongsTo { get; set; }
         [Required]

@@ -5,7 +5,7 @@ namespace SportStats.Models;
 public class StatChartModel
 {
     public StatType Type { get; set; }
-    public int Count {  get; set; }
+    public int Count { get; set; }
 
 }
 

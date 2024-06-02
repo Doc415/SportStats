@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SportStats.Models
 {
-    public abstract class BaseStat:IStat
+    public abstract class BaseStat : IStat
     {
         public int Id { get; set; }
         [Required]

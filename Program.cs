@@ -18,10 +18,10 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IStatRepository, StatRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<TeamService> ();
+builder.Services.AddScoped<TeamService>();
 builder.Services.AddScoped<PlayerService>();
-builder.Services.AddScoped<StatService> ();
-builder.Services.AddScoped<GameService> ();
+builder.Services.AddScoped<StatService>();
+builder.Services.AddScoped<GameService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

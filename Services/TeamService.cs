@@ -19,7 +19,7 @@ public class TeamService
 
     public async Task DeleteTeam(int id)
     {
-       await _repository.DeleteTeam(id);
+        await _repository.DeleteTeam(id);
     }
 
     public async Task<Team> GetTeamById(int id)

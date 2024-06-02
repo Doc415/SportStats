@@ -1,9 +1,9 @@
-﻿using SportStats.Models;
-using SportStats.Data;
+﻿using SportStats.Data;
+using SportStats.Models;
 
 namespace SportStats.Repositories;
 
-public class GameRepository:IGameRepository
+public class GameRepository : IGameRepository
 {
     public StatsContext _context;
 
@@ -12,7 +12,7 @@ public class GameRepository:IGameRepository
         _context = context;
     }
 
-        public async Task<Game> AddGame(Game game)
+    public async Task<Game> AddGame(Game game)
     {
         try
         {
@@ -20,7 +20,7 @@ public class GameRepository:IGameRepository
             await _context.SaveChangesAsync();
             var recordedGame = _context.Games.OrderByDescending(e => e.Id).FirstOrDefault();
             return recordedGame;
-        } 
+        }
         catch (Exception ex)
         {
             return null;
