@@ -111,7 +111,7 @@ else
 
             </div>
         </FluentStack>
-        <GameTime></GameTime>
+        <GameTime OnVariableChange="HandleVariableChange"></GameTime>
 
         <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" Width="38%">
             <ApexChart @ref="chart"
@@ -175,8 +175,12 @@ else
     private ApexChart<StatChartModel> chart;
     bool OpponentInputDisabled = false;
     private ApexChartOptions<StatChartModel> options;
-    
 
+    private void HandleVariableChange(string newValue)
+    {
+        GameStarted = false ;
+        navManager.NavigateTo("/");
+    }
 
     private void PlayerChanged()
     {

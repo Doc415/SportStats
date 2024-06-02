@@ -6,7 +6,7 @@
     <p style="font-size:4em;margin-top:50px"> @currentTime.ToString(@"hh\:mm\:ss")</p>
    <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
         <FluentButton Type="ButtonType.Button" OnClick="PauseTime" Color="#dddd22">@pauseButtonText</FluentButton>
-        <FluentButton Type="ButtonType.Button" Color="#dd0000">End Session</FluentButton>
+        <FluentButton Type="ButtonType.Button" Color="#dd0000" OnClick="HandleClick">End Session</FluentButton>
 
    </FluentStack>
    
@@ -19,6 +19,13 @@
     private TimeSpan currentTime;
     private bool isPaused = false;
     private string pauseButtonText;
+   [Parameter] 
+    public EventCallback<string> OnVariableChange { get; set; }
+
+    private void HandleClick()
+    {
+      OnVariableChange.InvokeAsync("stop game");
+    }
 
     protected override void OnInitialized()
     {
