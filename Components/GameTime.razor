@@ -3,7 +3,7 @@
 @using System.Globalization
 
 <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" >
-    <p style="font-size:4em;margin-top:50px"> @currentTime.ToString(@"hh\:mm\:ss")</p>
+    <p style="font-family: 'Digital Numbers', sans-serif;font-size:4em;margin-top:50px;margin-bottom:30px;color:darkred"> @currentTime.ToString(@"hh\:mm\:ss")</p>
    <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalAlignment="HorizontalAlignment.Center">
         <FluentButton Type="ButtonType.Button" OnClick="PauseTime" Color="#dddd22">@pauseButtonText</FluentButton>
         <FluentButton Type="ButtonType.Button" Color="#dd0000" OnClick="HandleClick">End Session</FluentButton>
@@ -12,6 +12,7 @@
    
 
 </FluentStack>
+
 
 @code {
     private System.Timers.Timer _timer;

@@ -31,12 +31,12 @@ else
 {
     <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
 
-       
+
         <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" VerticalGap="10" Width="62%">
 
 
-           
-           <div Style="width:600;height:385px;background-image:url('court.jpg'); background-size:contain">
+
+            <div Style="width:600;height:385px;background-image:url('court.jpg'); background-size:contain">
 
                 <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
                     <FluentButton Id="A1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A1"))></FluentButton>
@@ -58,7 +58,7 @@ else
 
             </div>
 
-           <div>
+            <div>
                 <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
                     @if (locationSelected)
                     {
@@ -111,7 +111,14 @@ else
 
             </div>
         </FluentStack>
-        <GameTime OnVariableChange="HandleVariableChange"></GameTime>
+
+        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" Style="border:dashed">
+            <GameTime OnVariableChange="HandleVariableChange"></GameTime>
+            <p style="font-family: 'Digital Numbers', sans-serif;font-size:2em;margin:20px;color:cadetblue">@selectedTeam.Name.ToUpper()</p>
+            <p style="font-family: 'Digital Numbers', sans-serif;font-size:3em;margin:20px;color:darkorange">vs</p>
+            <p style="font-family: 'Digital Numbers', sans-serif;font-size:2em;margin:25px;color:cadetblue">@Opponent.ToUpper()</p>
+        </FluentStack>
+
 
         <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" Width="38%">
             <ApexChart @ref="chart"
@@ -132,12 +139,9 @@ else
             </ApexChart>
 
             <FluentTextArea Rows="15" Cols="72" Placeholder="Game notes"></FluentTextArea>
-            <FluentButton Type="ButtonType.Button" OnClick="EndSession"> End Game Session</FluentButton>
- 
+        </FluentStack>
 
-            </FluentStack>
 
-      
 
     </FluentStack>
 
@@ -178,8 +182,7 @@ else
 
     private void HandleVariableChange(string newValue)
     {
-        GameStarted = false ;
-        navManager.NavigateTo("/");
+        EndSession();
     }
 
     private void PlayerChanged()
@@ -206,7 +209,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        Teams = await _teamService.GetTeams();       
+        Teams = await _teamService.GetTeams();
         selectedTeam = Teams[0];
         IngamePlayers = selectedTeam.Players;
         options = new ApexChartOptions<StatChartModel>
@@ -217,7 +220,7 @@ else
                     Palette = PaletteType.Palette7
                 }
             };
-           }
+    }
 
 
     private void OnSelectedTeamChanged(ChangeEventArgs e)
