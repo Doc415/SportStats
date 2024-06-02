@@ -30,7 +30,7 @@ namespace SportStats.Repositories
             {
                 var player = await _context.Players.FindAsync(id);
 
-                      _context.Remove(player);
+                      _context.Remove(player!);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace SportStats.Repositories
         {
             try
             {
-               return await _context.Players.Include(e=>e.Stats).ToListAsync();
+               return await _context.Players.Include(e=>e.Stats).Include(e=>e.MemberOf).ToListAsync();
             }
             catch (Exception ex)
             {

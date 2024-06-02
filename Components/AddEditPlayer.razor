@@ -49,9 +49,10 @@
     public Player? InputPlayer { get; set; }
     public bool editPlayer = false;
     public List<Team> TeamList = new();
-    public string SelectedTeamId;
-    public Team SelectedTeam;
+    public string? SelectedTeamId;
+    public Team? SelectedTeam;
     private string Header = string.Empty;
+    bool teamFirstLoad = true;
 
     ConfirmDeleteModel _confirmDeleteModel = new()
         {
@@ -70,16 +71,21 @@
         {
             editPlayer = true;
             Header = "Edit player";
-           
+            if(InputPlayer.MemberOf!=null){
+                SelectedTeamId = InputPlayer.Id.ToString();
+                SelectedTeam = InputPlayer.MemberOf;
+               
+            }
         }
 
         TeamList = await _teamService.GetTeams();
-        TeamList.Insert(0, null);
+    
     }
-
+    
     public async Task HandleValidSubmit()
     {
        
+        if (SelectedTeam!=null)
         InputPlayer.MemberOf = SelectedTeam;
 
         if (editPlayer)

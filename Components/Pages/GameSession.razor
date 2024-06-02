@@ -8,36 +8,34 @@
 @inject GameService _gameService
 @inject NavigationManager navManager
 
-<h3>Select Team</h3>
-
-<FluentSelect TOption="Team"
-              Items="@Teams"
-              Id="team-listbox"
-              Disabled="@GameStarted"
-              OptionValue="@(p => p.Id.ToString())"
-              OptionText="@(p => p.Name)"
-              @bind-SelectedOption="@tempTeam"
-              @onchange="OnSelectedTeamChanged" />
-<FluentTextField Label="Opponent" Immediate="true" @bind-Value="Opponent" Disabled="@OpponentInputDisabled"></FluentTextField>
 
 @if (!GameStarted)
 {
+
+    <h3>Select Team</h3>
+
+    <FluentSelect TOption="Team"
+                  Items="@Teams"
+                  Id="team-listbox"
+                  Disabled="@GameStarted"
+                  OptionValue="@(p => p.Id.ToString())"
+                  OptionText="@(p => p.Name)"
+                  @bind-SelectedOption="@tempTeam"
+                  @onchange="OnSelectedTeamChanged" />
+    <FluentTextField Label="Opponent" Immediate="true" @bind-Value="Opponent" Disabled="@OpponentInputDisabled"></FluentTextField>
     <FluentButton Type="ButtonType.Button" OnClick="StartSession"> Start Game Session</FluentButton>
 }
+
 else
-{
-    <FluentButton Type="ButtonType.Button" OnClick="EndSession"> End Game Session</FluentButton>
-}
-
-
-@if (GameStarted)
 {
     <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
 
        
-        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" HorizontalGap="10">
+        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" VerticalGap="10" Width="62%">
+
+
            
-            <div Style="width:600px;height:385px;background-image:url('court.jpg'); background-size:contain">
+           <div Style="width:600;height:385px;background-image:url('court.jpg'); background-size:contain">
 
                 <FluentStack Orientation=" Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="1" Width="600">
                     <FluentButton Id="A1" Type="ButtonType.Button" Appearance="Appearance.Outline" Style="width:199px;height:125px;" BackgroundColor="transparent" @onclick=@(()=>SelectLocation("A1"))></FluentButton>
@@ -59,7 +57,7 @@ else
 
             </div>
 
-            <div>
+           <div>
                 <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
                     @if (locationSelected)
                     {
@@ -105,7 +103,7 @@ else
                     @if (statSelected)
                     {
                         <FluentStack>
-                            <FluentButton Type="ButtonType.Button" OnClick="HandleValidSubmit">Submit</FluentButton>
+                            <FluentButton Style="width:180px;height:180px" Type="ButtonType.Button" OnClick="HandleValidSubmit">Submit</FluentButton>
                         </FluentStack>
                     }
                 </FluentStack>
@@ -113,24 +111,32 @@ else
 
             </div>
         </FluentStack>
-   
-      
-        <ApexChart @ref="chart"
-                   TItem="StatChartModel"
-                   Title="Stats"
-                   Width="600"
-                   Height="600"
-                   Options=options>
 
-            @foreach (var player in series)
-            {
-                <ApexPointSeries Name="@player.Id.ToString()"
-                                 Items="@player.StatList"
-                                 XValue="@(e=> e.Type)"
-                                 YValue="@(e => e.Count)"
-                                 SeriesType="SeriesType.Bar" />
-            }
-        </ApexChart>
+
+        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" Width="38%">
+            <ApexChart @ref="chart"
+                       TItem="StatChartModel"
+                       Title="Stats"
+                       Width="500"
+                       Height="400"
+                       Options=options>
+
+                @foreach (var player in series)
+                {
+                    <ApexPointSeries Name="@player.Id.ToString()"
+                                     Items="@player.StatList"
+                                     XValue="@(e=> e.Type)"
+                                     YValue="@(e => e.Count)"
+                                     SeriesType="SeriesType.Bar" />
+                }
+            </ApexChart>
+
+            <FluentTextArea Rows="15" Cols="72" Placeholder="Game notes"></FluentTextArea>
+            <FluentButton l Type="ButtonType.Button" OnClick="EndSession"> End Game Session</FluentButton>
+
+            </FluentStack>
+
+      
 
     </FluentStack>
 
