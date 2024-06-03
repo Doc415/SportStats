@@ -1,4 +1,5 @@
-﻿using SportStats.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SportStats.Data;
 using SportStats.Models;
 
 namespace SportStats.Repositories;
@@ -23,7 +24,22 @@ public class GameRepository : IGameRepository
         }
         catch (Exception ex)
         {
+            Console.Error.WriteLine(ex.Message);
             return null;
         }
     }
+
+    public async Task<List<Game>> GetGamesForPlayer(Player player)
+    {
+        try
+        {
+            return await _context.Games.Where(x => x.OwnTeam.Players.Contains(player)).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
 }

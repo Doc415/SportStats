@@ -12,5 +12,6 @@ public class StatChartModel
 public class PlayerChartModel
 {
     public int Id { get; set; }
+    public string Name { get; set; }
     public List<StatChartModel> StatList { get; set; }
 }

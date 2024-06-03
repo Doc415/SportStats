@@ -1,0 +1,51 @@
+﻿@page "/reports"
+@rendermode InteractiveServer
+@inject PlayerService _playerService
+@inject GameService _gameService
+@inject StatService _statService
+
+
+<FluentSelect TOption="Player"
+              Items="@Players"
+              Id="player-listbox"
+              OptionValue="@(p => p.Id.ToString())"
+              OptionText="@(p => p.Name)"
+              @bind-SelectedOption="@selectBoxPlayer"
+              @onchange="OnSelectedPlayerChanged" />
+
+<FluentSelect TOption="Game"
+              Items="@Games"
+              Id="game-listbox"
+              OptionValue="@(p => p.Id.ToString())"
+              OptionText="@(p => p.DateTime.ToShortDateString())"
+              @bind-SelectedOption="@selectedGame" />
+
+<FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="10">
+
+
+
+</FluentStack>
+
+@code {
+    private Player selectBoxPlayer = new();
+    private Player selectedPlayer=new();
+    private List<Player> Players=new();
+    private List<PlayerChartModel> ChartList;
+    private List<Game> Games = new();
+    private Game selectedGame = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Players = await _playerService.GetPlayers();
+    }
+
+    private async Task OnSelectedPlayerChanged(ChangeEventArgs e)
+    {
+        var tempPlayerId = e.Value.ToString();
+        selectedPlayer = Players.FirstOrDefault(p => p.Id.ToString() == tempPlayerId);
+        if (selectedPlayer != null)
+        {
+            Games = await _gameService.GetGamesForPlayer(selectedPlayer);
+        }
+    }
+}
