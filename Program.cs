@@ -18,11 +18,34 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IStatRepository, StatRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<Seeder>();
 builder.Services.AddScoped<TeamService>();
 builder.Services.AddScoped<PlayerService>();
 builder.Services.AddScoped<StatService>();
 builder.Services.AddScoped<GameService>();
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<StatsContext>();
+     dbContext.Database.EnsureDeleted();
+     dbContext.Database.EnsureCreated();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+
+    var services = scope.ServiceProvider;
+    try
+    {
+        var seeder = services.GetRequiredService<Seeder>();
+        await seeder.SeedDb();
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine(ex.Message);
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

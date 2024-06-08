@@ -1,8 +1,11 @@
 ﻿@page "/reports"
 @rendermode InteractiveServer
+@using Blazor_ApexCharts
+@using SportStats.Enums
 @inject PlayerService _playerService
 @inject GameService _gameService
 @inject StatService _statService
+@inject NavigationManager navManager
 
 
 <FluentSelect TOption="Player"
@@ -18,11 +21,31 @@
               Id="game-listbox"
               OptionValue="@(p => p.Id.ToString())"
               OptionText="@(p => p.DateTime.ToShortDateString())"
-              @bind-SelectedOption="@selectedGame" />
+              @bind-SelectedOption="@selectBoxGame"
+              @onchange="OnSelectedGameChanged" />
 
 <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal" HorizontalGap="10">
-
-
+    
+     <ApexChart @ref="chart"
+        TItem="StatChartModel"
+               Title="Stats"
+               Width="500"
+               Height="400"
+               Options=options>
+    
+    @if(series != null)
+    {
+        foreach(var player in series){
+            <ApexPointSeries Name
+            ="@stats.Name.ToString()"
+            Items="@stats.StatList"
+            XValue="@(e=> e.Type)"
+            YValue="@(e => e.Count)"
+            SeriesType="SeriesType.Bar" />
+        }
+      
+        }
+    </ApexChart>
 
 </FluentStack>
 
@@ -33,10 +56,24 @@
     private List<PlayerChartModel> ChartList;
     private List<Game> Games = new();
     private Game selectedGame = new();
+    private Game selectBoxGame = new();
+    private PlayerChartModel stats;
+    private ApexChart<StatChartModel> chart;
+    private ApexChartOptions<StatChartModel> options;
+    private List<PlayerChartModel> series = new();
 
     protected override async Task OnInitializedAsync()
     {
         Players = await _playerService.GetPlayers();
+        Players.Insert(0,new Player());
+        options = new ApexChartOptions<StatChartModel>
+            {
+                Theme = new Theme
+                {
+                    Mode = Mode.Dark,
+                    Palette = PaletteType.Palette7
+                }
+            };
     }
 
     private async Task OnSelectedPlayerChanged(ChangeEventArgs e)
@@ -47,5 +84,24 @@
         {
             Games = await _gameService.GetGamesForPlayer(selectedPlayer);
         }
+       
     }
+
+    private async Task OnSelectedGameChanged(ChangeEventArgs e)
+    {
+
+        var tempGameId = e.Value.ToString();
+        selectedGame = Games.FirstOrDefault(p => p.Id.ToString() == tempGameId);
+        if (selectedGame != null)
+        {
+            stats = await _statService.GetPlayerStatsInGameForChart(selectedPlayer, selectedGame);
+            series.Clear();
+            series.Add(stats);
+        }  
+        StateHasChanged();
+            await chart!.UpdateSeriesAsync(true);
+           
+    }
+
+
 }

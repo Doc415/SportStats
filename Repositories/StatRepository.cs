@@ -23,8 +23,9 @@ public class StatRepository : IStatRepository
     {
         try
         {
-            var statList= await _context.Stats.Where(s=> s.InGame == game && s.BelongsTo==player).ToListAsync();
-            return statList;
+            var statList=  _context.Stats.Where(s=> s.InGame.Id == game.Id);
+            var returnList= await statList.Where(s=> s.BelongsTo.Id == player.Id).ToListAsync();
+            return  returnList;
         }
         catch(Exception e)
         {

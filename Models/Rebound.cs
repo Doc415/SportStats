@@ -5,15 +5,9 @@ namespace SportStats.Models
 {
     public class Rebound : BaseStat
     {
-        public int Id { get; set; }
-        [Required]
-        public Game InGame { get; set; }
-
-        [Required]
-        public Player BelongsTo { get; set; }
-        [Required]
-        public StatType Stat { get; set; } = StatType.Rebound;
-        [Required]
-        public string Location { get; set; }
+        public Rebound()
+        {
+            Stat = StatType.Rebound;
+        }
     }
 }
