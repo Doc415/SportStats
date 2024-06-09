@@ -44,11 +44,11 @@ public class StatService
         var interceptionList = allStats.Where(x => x.Stat == StatType.Interception).ToList();
         var reboundList = allStats.Where(x => x.Stat == StatType.Rebound).ToList();
 
-        var allDates = allStats.GroupBy(x => x.InGame.DateTime).Select(x => x.Key).ToList();
+        var allDates = allStats.GroupBy(x => x.InGame.DateTime.Date).Select(x => x.Key).ToList();
 
         var shots = allDates
             .GroupJoin(
-                shotList.GroupBy(x => x.InGame.DateTime),
+                shotList.GroupBy(x => x.InGame.DateTime.Date),
                 date => date,
                 dateGroup => dateGroup.Key,
                 (date, dateGroup) => new ShotModel
@@ -60,7 +60,7 @@ public class StatService
 
         var passes = allDates
          .GroupJoin(
-          passList.GroupBy(x => x.InGame.DateTime),
+          passList.GroupBy(x => x.InGame.DateTime.Date),
           date => date,
           dateGroup => dateGroup.Key,
           (date, dateGroup) => new PassModel
@@ -72,7 +72,7 @@ public class StatService
 
         var interceptions = allDates
             .GroupJoin(
-                interceptionList.GroupBy(x => x.InGame.DateTime),
+                interceptionList.GroupBy(x => x.InGame.DateTime.Date),
                 date => date,
                 dateGroup => dateGroup.Key,
                 (date, dateGroup) => new InterceptionModel
@@ -84,7 +84,7 @@ public class StatService
 
         var blocks = allDates
     .GroupJoin(
-        blockList.GroupBy(x => x.InGame.DateTime),
+        blockList.GroupBy(x => x.InGame.DateTime.Date),
         date => date,
         dateGroup => dateGroup.Key,
         (date, dateGroup) => new BlockModel
@@ -96,7 +96,7 @@ public class StatService
 
         var rebounds = allDates
     .GroupJoin(
-        reboundList.GroupBy(x => x.InGame.DateTime),
+        reboundList.GroupBy(x => x.InGame.DateTime.Date),
         date => date,
         dateGroup => dateGroup.Key,
         (date, dateGroup) => new ReboundModel
