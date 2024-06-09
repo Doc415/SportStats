@@ -41,7 +41,7 @@
 
                 <ApexPointSeries Name="Block"
                                  Items="@SeasonData.Blocks"
-                                 XValue="@(e=> e.GameDate.ToShortDateString())"
+                                 XValue="@(e=> e.GameDate)"
                                  YValue="@(e => e.Count)"
                                  SeriesType="SeriesType.Line" />
 
@@ -58,7 +58,7 @@
 
             <ApexPointSeries Name="Pass"
                              Items="@SeasonData.Passes"
-                             XValue="@(e=> e.GameDate.ToShortDateString())"
+                             XValue="@(e=> e.GameDate)"
                              YValue="@(e => e.Count)"
                              SeriesType="SeriesType.Line" />
 
@@ -75,7 +75,7 @@
 
             <ApexPointSeries Name="Interception"
                              Items="@SeasonData.Interceptions"
-                             XValue="@(e=> e.GameDate.ToShortDateString())"
+                             XValue="@(e=> e.GameDate)"
                              YValue="@(e => e.Count)"
                              SeriesType="SeriesType.Line" />
 
@@ -92,7 +92,7 @@
 
             <ApexPointSeries Name="Rebound"
                              Items="@SeasonData.Rebounds"
-                             XValue="@(e=> e.GameDate.ToShortDateString())"
+                             XValue="@(e=> e.GameDate)"
                              YValue="@(e => e.Count)"
                              SeriesType="SeriesType.Line" />
 
@@ -109,7 +109,7 @@
 
             <ApexPointSeries Name="Shot"
                              Items="@SeasonData.Shots"
-                             XValue="@(e=> e.GameDate.ToShortDateString())"
+                             XValue="@(e=> e.GameDate)"
                              YValue="@(e => e.Count)"
                              SeriesType="SeriesType.Line" />
 

@@ -35,6 +35,8 @@ public class StatService
 
     public async Task<SeasonDataModel> GetPlayerSeasonData(Player player)
     {
+
+
         var allStats = await _statRepository.GetPlayerStats(player);
         var shotList = allStats.Where(x => x.Stat == StatType.Shot).ToList();
         var passList = allStats.Where(x => x.Stat == StatType.Pass).ToList();
@@ -42,11 +44,67 @@ public class StatService
         var interceptionList = allStats.Where(x => x.Stat == StatType.Interception).ToList();
         var reboundList = allStats.Where(x => x.Stat == StatType.Rebound).ToList();
 
-        var shots = shotList.GroupBy(x => x.InGame.DateTime).Select(dateGroup => new ShotModel() { GameDate = dateGroup.Key, Count = dateGroup.Count() }).ToList();
-        var passes = passList.GroupBy(x => x.InGame.DateTime).Select(dateGroup => new PassModel() { GameDate = dateGroup.Key, Count = dateGroup.Count() }).ToList();
-        var blocks = blockList.GroupBy(x => x.InGame.DateTime).Select(dateGroup => new BlockModel() { GameDate = dateGroup.Key, Count = dateGroup.Count() }).ToList();
-        var interceptions = interceptionList.GroupBy(x => x.InGame.DateTime).Select(dateGroup => new InterceptionModel() { GameDate = dateGroup.Key, Count = dateGroup.Count() }).ToList();
-        var rebounds = reboundList.GroupBy(x => x.InGame.DateTime).Select(dateGroup => new ReboundModel() { GameDate = dateGroup.Key, Count = dateGroup.Count() }).ToList();
+        var allDates = allStats.GroupBy(x => x.InGame.DateTime).Select(x => x.Key).ToList();
+
+        var shots = allDates
+            .GroupJoin(
+                shotList.GroupBy(x => x.InGame.DateTime),
+                date => date,
+                dateGroup => dateGroup.Key,
+                (date, dateGroup) => new ShotModel
+                {
+                    GameDate = date,
+                    Count = dateGroup.SelectMany(g => g).Count()
+                })
+            .ToList();
+
+        var passes = allDates
+         .GroupJoin(
+          passList.GroupBy(x => x.InGame.DateTime),
+          date => date,
+          dateGroup => dateGroup.Key,
+          (date, dateGroup) => new PassModel
+        {
+            GameDate = date,
+            Count = dateGroup.SelectMany(g => g).Count()
+        })
+    .ToList();
+
+        var interceptions = allDates
+            .GroupJoin(
+                interceptionList.GroupBy(x => x.InGame.DateTime),
+                date => date,
+                dateGroup => dateGroup.Key,
+                (date, dateGroup) => new InterceptionModel
+                {
+                    GameDate = date,
+                    Count = dateGroup.SelectMany(g => g).Count()
+                })
+            .ToList();
+
+        var blocks = allDates
+    .GroupJoin(
+        blockList.GroupBy(x => x.InGame.DateTime),
+        date => date,
+        dateGroup => dateGroup.Key,
+        (date, dateGroup) => new BlockModel
+        {
+            GameDate = date,
+            Count = dateGroup.SelectMany(g => g).Count()
+        })
+    .ToList();
+
+        var rebounds = allDates
+    .GroupJoin(
+        reboundList.GroupBy(x => x.InGame.DateTime),
+        date => date,
+        dateGroup => dateGroup.Key,
+        (date, dateGroup) => new ReboundModel
+        {
+            GameDate = date,
+            Count = dateGroup.SelectMany(g => g).Count()
+        })
+    .ToList();
 
         var seasonData = new SeasonDataModel()
         {
