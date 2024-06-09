@@ -33,4 +33,18 @@ public class StatRepository : IStatRepository
             return null;
         }
     }
+
+    public async Task<List<BaseStat>> GetPlayerStats(Player player)
+    {
+        try
+        {
+            var returnList = await _context.Stats.Where(s => s.BelongsTo.Id == player.Id).ToListAsync();
+            return returnList;
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return null;
+        }
+    }
 }

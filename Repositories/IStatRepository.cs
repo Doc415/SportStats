@@ -6,5 +6,6 @@ namespace SportStats.Repositories
     {
         Task AddStat(BaseStat stat);
         Task<List<BaseStat>> GetPlayerStatsInGame(Player player, Game game);
+        Task<List<BaseStat>> GetPlayerStats(Player player);
     }
 }
