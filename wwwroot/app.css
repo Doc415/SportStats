@@ -7,6 +7,8 @@ body {
     font-size: var(--type-ramp-base-font-size);
     line-height: var(--type-ramp-base-line-height);
     margin: 0;
+    background-image=url("basket-background.jpg");
+    background-size:cover;
 }
 
 body {
@@ -19,6 +21,7 @@ body {
     font-weight: var(--font-weight);
     color: var(--neutral-foreground-rest);
     background: var(--neutral-fill-layer-rest);
+
 }
 
 .navmenu-icon {
@@ -186,7 +189,5 @@ code {
         width: 20px;
         height: 20px;
         border: none;
-    }
-
- 
+    } 
 }
