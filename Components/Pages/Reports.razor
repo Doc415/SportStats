@@ -8,7 +8,7 @@
 @inject StatService _statService
 @inject NavigationManager navManager
 
-
+<h5>Select player for statistics</h5>
 <FluentSelect TOption="Player"
               Items="@Players"
               Id="player-listbox"
@@ -17,18 +17,14 @@
               @bind-SelectedOption="@selectBoxPlayer"
               @onchange="OnSelectedPlayerChanged" />
 
-<FluentSelect TOption="Game"
-              Items="@Games"
-              Id="game-listbox"
-              OptionValue="@(p => p.Id.ToString())"
-              OptionText="@(p => p.DateTime.ToShortDateString())"
-              @bind-SelectedOption="@selectBoxGame"
-              @onchange="OnSelectedGameChanged" />
 
-<FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical" VerticalGap="10">
+<FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
+    <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical">
+
+  
     @if (selectedPlayer!=null && SeasonData.Blocks  !=null) 
     {
-
+        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
         <ApexChart     TItem="BlockModel"
                        Title="Block"
                        Width="@chartWidth"
@@ -63,7 +59,8 @@
                              SeriesType="SeriesType.Line" />
 
         </ApexChart>
-
+        </FluentStack>
+        <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Horizontal">
         <ApexChart TItem="InterceptionModel"
                    Title="Interception"
                    Width="@chartWidth"
@@ -97,7 +94,8 @@
                              SeriesType="SeriesType.Line" />
 
         </ApexChart>
-
+        </FluentStack>
+        <FluentStack>
         <ApexChart TItem="ShotModel"
                    Title="Shot"
                    Width="@chartWidth"
@@ -115,42 +113,55 @@
 
         </ApexChart>
        
-
+        </FluentStack>
            
                 
     }
+    </FluentStack>
    
-    @if (series.Count > 0)
-    {
-        <ApexChart @ref="chart"
-                   TItem="StatChartModel"
-                   Title="Stats"
-                   Width="500"
-                   Height="400"
-                   Options=options>
+ <FluentStack Orientation="Microsoft.FluentUI.AspNetCore.Components.Orientation.Vertical">
+     <h5>Select game for ingame statistcs</h5>
+        <FluentSelect TOption="Game"
+                      Items="@Games"
+                      Id="game-listbox"
+                      OptionValue="@(p => p.Id.ToString())"
+                      OptionText="@(p => p.DateTime.ToShortDateString())"
+                      @bind-SelectedOption="@selectBoxGame"
+                      @onchange="OnSelectedGameChanged" />
 
-            @if (series != null)
-            {
-                foreach (var player in series)
+        @if (series.Count > 0)
+        {
+            <ApexChart @ref="chart"
+                       TItem="StatChartModel"
+                       Title="Stats"
+                       Width="500"
+                       Height="400"
+                       Options=options>
+
+                @if (series != null)
                 {
-                    <ApexPointSeries Name="@stats.Name.ToString()"
-                                     Items="@stats.StatList"
-                                     XValue="@(e=> e.Type)"
-                                     YValue="@(e => e.Count)"
-                                     SeriesType="SeriesType.Bar" />
+                    foreach (var player in series)
+                    {
+                        <ApexPointSeries Name="@stats.Name.ToString()"
+                                         Items="@stats.StatList"
+                                         XValue="@(e=> e.Type)"
+                                         YValue="@(e => e.Count)"
+                                         SeriesType="SeriesType.Bar" />
+                    }
+
                 }
+            </ApexChart>
+        }
 
-            }
-        </ApexChart>
-    }
- 
+    </FluentStack>
 
-</FluentStack>
+ </FluentStack>
+
 
 @code {
     private string referenceName = string.Empty;
-    private int chartWidth = 550;
-    private int chartHeight = 450;
+    private int chartWidth = 350;
+    private int chartHeight = 250;
     private int index;
     private Player selectBoxPlayer = new();
     private Player selectedPlayer=new();
