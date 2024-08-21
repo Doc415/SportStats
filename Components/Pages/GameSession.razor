@@ -72,8 +72,8 @@ else
                                            Multiple="false"
                                            OptionValue="@(p => p.Id.ToString())"
                                            OptionText="@(p => p.Surname + " " + p.Name)"
-                                           ValueChanged="PlayerChanged"
-                                           @bind-SelectedOption="tempPlayer">
+                                           SelectedOptionChanged="PlayerChanged"
+                                           @bind-value="tempPlayerId">
                                 <OptionTemplate>
                                     <FluentIcon Icon="Icons.Regular.Size16.Person" Slot="end" OnClick="@(() =>Console.WriteLine($"Icon for {@context.Surname} selected"))" />
                                     @context.Surname (@context.Name)
@@ -94,8 +94,8 @@ else
                                            Width="200px"
                                            OptionValue="@(p => p)"
                                            OptionText="@(p => p)"
-                                           ValueChanged="StatChanged"
-                                           @bind-SelectedOption="tempStat">
+                                           SelectedOptionChanged="StatChanged"
+                                           @bind-value="tempStat">
                             </FluentListbox>
                         </FluentStack>
 
@@ -137,8 +137,13 @@ else
                                      SeriesType="SeriesType.Bar" />
                 }
             </ApexChart>
-
-            <FluentTextArea Rows="15" Cols="72" Placeholder="Game notes"></FluentTextArea>
+            <FluentEditForm Model="@CurrentGame" OnValidSubmit="UpdateNotes">
+            <FluentTextArea Rows="15" @bind-Value="@CurrentGame.GameNotes" Cols="72" Placeholder="Game notes"></FluentTextArea>
+           <FluentButton Type="ButtonType.Submit">Save Notes</FluentButton>
+            </FluentEditForm>
+            
+          
+            
         </FluentStack>
 
 
@@ -149,6 +154,7 @@ else
 }
 
 @code {
+    string gameNotes = string.Empty;
     JustifyContent Justification = JustifyContent.FlexStart;
     List<PlayerChartModel> series = new();
     Game CurrentGame = new();
@@ -158,7 +164,7 @@ else
     string selectedLocation = string.Empty;
     List<Player>? IngamePlayers = new();
     string SelectedPlayerId = string.Empty;
-    List<string> StatList = new List<string> { "Pass", "Interception", "Shot", "Rebound", "Block" };
+    List<string> StatList = new List<string> { "","Pass", "Interception", "Shot", "Rebound", "Block" };
     string SelectedStat = string.Empty;
     private string status = "";
     List<Player> players = new();
@@ -170,6 +176,7 @@ else
     string tempTeamId = string.Empty;
     bool GameStarted = false;
     Player tempPlayer = new();
+    string tempPlayerId = "-1";
     Player selectedPlayer = new();
     bool playerFirstLoad = true;
     bool statFirstLoad = true;
@@ -185,24 +192,22 @@ else
         EndSession();
     }
 
+    private async Task UpdateNotes()
+    {
+        await _gameService.UpdateGame(CurrentGame);
+    }
+
     private void PlayerChanged()
     {
-        if (playerFirstLoad)
-        {
-            playerFirstLoad = !playerFirstLoad;
-            return;
-        }
+    
+        tempPlayer = IngamePlayers.FirstOrDefault(p => p.Id == int.Parse(tempPlayerId));
         selectedPlayer = tempPlayer;
         playerSelected = true;
     }
 
     private void StatChanged()
     {
-        if (statFirstLoad)
-        {
-            statFirstLoad = !statFirstLoad;
-            return;
-        }
+      
         SelectedStat = tempStat;
         statSelected = true;
     }
@@ -212,6 +217,7 @@ else
         Teams = await _teamService.GetTeams();
         selectedTeam = Teams[0];
         IngamePlayers = selectedTeam.Players;
+
         options = new ApexChartOptions<StatChartModel>
             {
                 Theme = new Theme
@@ -270,6 +276,7 @@ else
 
     private async void EndSession()
     {
+        await _gameService.UpdateGame(CurrentGame);
         CurrentGame = null;
         navManager.NavigateTo("/", true);
     }
@@ -340,8 +347,7 @@ else
         selectedLocation = string.Empty;
         selectedPlayer = null;
         SelectedStat = null;
-        playerFirstLoad = true;
-        statFirstLoad = true;
+        tempPlayerId = "-1";
         tempPlayer = null;
         tempStat = null;
         await chart!.UpdateSeriesAsync(true);

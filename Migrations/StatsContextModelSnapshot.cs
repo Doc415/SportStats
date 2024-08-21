@@ -17,7 +17,7 @@ namespace SportStats.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0-preview.4.24267.1")
+                .HasAnnotation("ProductVersion", "9.0.0-preview.6.24327.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -71,6 +71,9 @@ namespace SportStats.Migrations
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("GameNotes")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OwnTeamId")
                         .HasColumnType("int");

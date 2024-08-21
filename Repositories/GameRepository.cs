@@ -19,7 +19,8 @@ public class GameRepository : IGameRepository
         {
             await _context.Games.AddAsync(game);
             await _context.SaveChangesAsync();
-            var recordedGame = _context.Games.OrderByDescending(e => e.Id).FirstOrDefault();
+
+            var recordedGame = _context.Games.Include(g=> g.StatsInGame).OrderByDescending(e => e.Id).FirstOrDefault();
             return recordedGame;
         }
         catch (Exception ex)
@@ -39,6 +40,19 @@ public class GameRepository : IGameRepository
         {
             Console.Error.WriteLine(ex.Message);
             return null;
+        }
+    }
+
+    public async Task UpdateGame(Game game)
+    {
+        try
+        {
+            _context.Games.Update(game);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.Message);
         }
     }
 
